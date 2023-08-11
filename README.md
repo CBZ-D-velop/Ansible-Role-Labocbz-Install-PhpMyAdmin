@@ -137,6 +137,8 @@ Here you can put your change to keep a trace of your work and decisions.
 ### 2023-08-11: First Init
 
 * First init of this role with the bootstrap_role playbook by Lord Robin Crombez
+* Role take care of SSL/TLS, HTTP/HTTPS et PHP, so other roles are in the requirement for test
+* Running the test case of this role will run an Apache2, PHP, PHP-FPM, Redis and MariaDB install
 
 ## Authors
 

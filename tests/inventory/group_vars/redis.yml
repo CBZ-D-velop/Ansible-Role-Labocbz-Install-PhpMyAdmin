@@ -1,0 +1,25 @@
+---
+inv_redis_bind: "0.0.0.0"
+inv_redis_proteced_mode: "no"
+inv_redis_loglevel: "notice"
+inv_redis_requirepass: "mySecret"
+
+inv_redis_cluster: false
+inv_redis_cluster_replicas: 2
+inv_redis_cluster_bootstrap: true
+
+inv_redis_path: "/etc/redis/redis-server-{{ port }}"
+inv_redis_conf: "{{ inv_redis_path }}/redis.conf"
+
+inv_redis_ports:
+  - 6379
+  - 6380
+  - 6381
+
+inv_redis_ssl: false
+inv_redis_ssl_domain: "my.redis-cluster.domain.tld"
+inv_redis_ssl_path: "/etc/redis/ssl"
+inv_redis_ssl_key: "{{ inv_redis_ssl_path }}/{{ inv_redis_ssl_domain }}/{{ inv_redis_ssl_domain }}.pem.key"
+inv_redis_ssl_cert: "{{ inv_redis_ssl_path }}/{{ inv_redis_ssl_domain }}/{{ inv_redis_ssl_domain }}.pem.crt"
+inv_redis_ssl_ca: "{{ inv_redis_ssl_path }}/{{ inv_redis_ssl_domain }}/ca-chain.pem.crt"
+inv_redis_ssl_auth_client: "no"

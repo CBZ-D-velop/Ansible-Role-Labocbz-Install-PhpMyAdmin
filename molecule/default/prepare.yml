@@ -5,8 +5,8 @@
   gather_facts: true
   tasks:
 
-    #- name: "Include cryptographic content var file"
-    #  ansible.builtin.include_vars: "../../tests/certs/main.yml"
+    - name: "Include cryptographic content var file"
+      ansible.builtin.include_vars: "../../tests/certs/main.yml"
 
     - name: "Include labocbz.prepare_host"
       tags:
@@ -28,48 +28,161 @@
       changed_when: output.rc != 0
       ansible.builtin.shell: "echo \"{{ hostvars[host]['ansible_default_ipv4']['address'] }}  {{ host }} # from Molecule\" >> /etc/hosts"
 
-    #- name: "Import cryptographic content if needed (cert)"
-    #  run_once: yes
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined and bundle.type == "cert"
-    #  ansible.builtin.copy:
-    #    src: "../../tests/certs/{{ bundle.name }}.zip"
-    #    dest: "/tmp/{{ bundle.name }}.zip"
-    #    owner: "root"
-    #    group: "root"
-    #    mode: 0700
+    - name: "Import cryptographic content if needed (cert)"
+      run_once: yes
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined and bundle.type == "cert"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}.zip"
+        dest: "/tmp/{{ bundle.name }}.zip"
+        owner: "root"
+        group: "root"
+        mode: 0700
 
-    #- name: "Import cryptographic content if needed (CA)"
-    #  run_once: yes
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined and bundle.type == "CA"
-    #  ansible.builtin.copy:
-    #    src: "../../tests/certs/{{ bundle.name }}"
-    #    dest: "/tmp/{{ bundle.name }}"
-    #    owner: "root"
-    #    group: "root"
-    #    mode: 0700
+    - name: "Import cryptographic content if needed (CA)"
+      run_once: yes
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined and bundle.type == "CA"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}"
+        dest: "/tmp/{{ bundle.name }}"
+        owner: "root"
+        group: "root"
+        mode: 0700
 
-    #- name: "Include labocbz.add_certificates"
-    #  tags:
-    #    - "labocbz.add_certificates"
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined
-    #  vars:
-    #    add_certificates_bundle_name: "{{ bundle.name }}"
-    #    add_certificates_bundle_type: "{{ bundle.type }}"
-    #    add_certificates_bundle_src: "{{ bundle.src }}"
-    #    add_certificates_bundle_dest: "{{ bundle.dest }}"
-    #    #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
-    #    #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
-    #    #add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
-    #    #add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
-    #    #add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
-    #  ansible.builtin.include_role:
-    #    name: "labocbz.add_certificates"
+    - name: "Include labocbz.add_certificates"
+      tags:
+        - "labocbz.add_certificates"
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined
+      vars:
+        add_certificates_bundle_name: "{{ bundle.name }}"
+        add_certificates_bundle_type: "{{ bundle.type }}"
+        add_certificates_bundle_src: "{{ bundle.src }}"
+        add_certificates_bundle_dest: "{{ bundle.dest }}"
+        #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
+        #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
+        #add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
+        #add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
+        #add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
+      ansible.builtin.include_role:
+        name: "labocbz.add_certificates"
+
+    - name: "Include labocbz.install_mariadb"
+      tags:
+        - "labocbz.install_mariadb"
+      vars:
+        install_mariadb_confs_path: "{{ inv_install_mariadb_confs_path }}"
+        install_mariadb_config_path: "{{ inv_install_mariadb_config_path }}"
+        install_mariadb_ssl_path: "{{ inv_install_mariadb_ssl_path }}"
+        install_mariadb_log_path: "{{ inv_install_mariadb_log_path }}"
+        install_mariadb_port: "{{ inv_install_mariadb_port }}"
+        install_mariadb_bind_address: "{{ inv_install_mariadb_bind_address }}"
+        install_mariadb_server_id: "{{ inv_install_mariadb_server_id }}"
+        install_mariadb_max_connections: "{{ inv_install_mariadb_max_connections }}"
+        install_mariadb_innodb_buffer_pool_size: "{{ inv_install_mariadb_innodb_buffer_pool_size }}"
+        install_mariadb_general_log_file: "{{ inv_install_mariadb_general_log_file }}"
+        install_mariadb_general_log: "{{ inv_install_mariadb_general_log }}"
+        install_mariadb_log_error: "{{ inv_install_mariadb_log_error }}"
+        install_mariadb_log_bin: "{{ inv_install_mariadb_log_bin }}"
+        install_mariadb_expire_logs_days: "{{ inv_install_mariadb_expire_logs_days }}"
+        install_mariadb_max_binlog_size: "{{ inv_install_mariadb_max_binlog_size }}"
+        install_mariadb_ssl: "{{ inv_install_mariadb_ssl }}"
+        install_mariadb_ssl_client_auth: "{{ inv_install_mariadb_ssl_client_auth }}"
+        install_mariadb_ssl_ca: "{{ inv_install_mariadb_ssl_ca }}"
+        install_mariadb_ssl_cert: "{{ inv_install_mariadb_ssl_cert }}"
+        install_mariadb_ssl_key: "{{ inv_install_mariadb_ssl_key }}"
+        install_mariadb_charset: "{{ inv_install_mariadb_charset }}"
+        install_mariadb_collation: "{{ inv_install_mariadb_collation }}"
+        install_mariadb_galera_cluster: "{{ inv_install_mariadb_galera_cluster }}"
+        install_mariadb_galera_node_list: "{{ inv_install_mariadb_galera_node_list }}"
+        install_mariadb_galera_clustername: "{{ inv_install_mariadb_galera_clustername }}"
+        install_mariadb_galera_node_name: "{{ inv_install_mariadb_galera_node_name }}"
+        install_mariadb_galera_node_address: "{{ inv_install_mariadb_galera_node_address }}"
+        install_mariadb_galera_cluster_seed_host: "{{ inv_install_mariadb_galera_cluster_seed_host }}"
+        install_mariadb_secure_root_password: "{{ inv_install_mariadb_secure_root_password }}"
+      ansible.builtin.include_role:
+        name: "labocbz.install_mariadb"
+
+    - name: "Include labocbz.install_apache"
+      tags:
+        - "labocbz.install_apache"
+      vars:
+        apache_https_listen_port: "{{ inv_apache_https_listen_port }}"
+        apache_http_listen_port: "{{ inv_apache_http_listen_port }}"
+        apache_modules: "{{ inv_apache_modules }}"
+        apache_enable_qos: "{{ inv_apache_enable_qos }}"
+        apache_qos_client_entries: "{{ inv_apache_qos_client_entries }}"
+        apache_qos_srv_max_conn_per_ip: "{{ inv_apache_qos_srv_max_conn_per_ip }}"
+        apache_qos_max_clients: "{{ inv_apache_qos_max_clients }}"
+        apache_qos_srv_max_conn_close: "{{ inv_apache_qos_srv_max_conn_close }}"
+        apache_qos_srv_min_data_rate: "{{ inv_apache_qos_srv_min_data_rate }}"
+        apache_enable_security: "{{ inv_apache_enable_security }}"
+        apache_security_core_version: "{{ inv_apache_security_core_version }}"
+        apache_enable_default_vhosts: "{{ inv_apache_enable_default_vhosts }}"
+        apache_remove_all_no_default_vhosts: "{{ inv_apache_remove_all_no_default_vhosts }}"
+      ansible.builtin.include_role:
+        name: "labocbz.install_apache"
+
+    - name: "Include labocbz.install_redis"
+      tags:
+        - "labocbz.install_redis"
+      loop: "{{ inv_redis_ports }}"
+      loop_control:
+        loop_var: port
+      vars:
+        redis_bind: "{{ inv_redis_bind }}"
+        redis_port: "{{ port }}"
+        redis_proteced_mode: "{{ inv_redis_proteced_mode }}"
+        redis_loglevel: "{{ inv_redis_loglevel }}"
+        redis_requirepass: "{{ inv_redis_requirepass }}"
+        redis_cluster: "{{ inv_redis_cluster }}"
+        redis_path: "{{ inv_redis_path }}"
+        redis_conf: "{{ inv_redis_conf }}"
+        redis_ssl: "{{ inv_redis_ssl }}"
+        redis_ssl_domain: "{{ inv_redis_ssl_domain }}"
+        redis_ssl_path: "{{ inv_redis_ssl_path }}"
+        redis_ssl_key: "{{ inv_redis_ssl_key }}"
+        redis_ssl_cert: "{{ inv_redis_ssl_cert }}"
+        redis_ssl_ca: "{{ inv_redis_ssl_ca }}"
+        redis_ssl_auth_client: "{{ inv_redis_ssl_auth_client }}"
+      ansible.builtin.include_role:
+        name: "labocbz.install_redis"
+
+    - name: "Include labocbz.install_php"
+      tags:
+        - "labocbz.install_php"
+      vars:
+        install_php_version: "{{ inv_install_php_version }}"
+        install_php_version_is_default: "{{ inv_install_php_version_is_default }}"
+        install_php_extensions: "{{ inv_install_php_extensions }}"
+        install_php_install_fpm: "{{ inv_install_php_install_fpm }}"
+        install_php_import_cli_conf: "{{ inv_install_php_import_cli_conf }}"
+        install_php_import_apache_conf: "{{ inv_install_php_import_apache_conf }}"
+        install_php_import_cgi_conf: "{{ inv_install_php_import_cgi_conf }}"
+        install_php_import_fpm_conf: "{{ inv_install_php_import_fpm_conf }}"
+        install_php_max_input_time: "{{ inv_install_php_max_input_time }}"
+        install_php_output_buffering: "{{ inv_install_php_output_buffering }}"
+        install_php_cgi_fix_pathinfo: "{{ inv_install_php_cgi_fix_pathinfo }}"
+        install_php_expose_php: "{{ inv_install_php_expose_php }}"
+        install_php_max_execution_time: "{{ inv_install_php_max_execution_time }}"
+        install_php_memory_limit: "{{ inv_install_php_memory_limit }}"
+        install_php_post_max_size: "{{ inv_install_php_post_max_size }}"
+        install_php_file_uploads: "{{ inv_install_php_file_uploads }}"
+        install_php_upload_max_filesize: "{{ inv_install_php_upload_max_filesize }}"
+        install_php_max_file_uploads: "{{ inv_install_php_max_file_uploads }}"
+        install_php_allow_url_fopen: "{{ inv_install_php_allow_url_fopen }}"
+        install_php_allow_url_include: "{{ inv_install_php_allow_url_include }}"
+        install_php_session_save_handler: "{{ inv_install_php_session_save_handler }}"
+        install_php_session_save_path: "{{ inv_install_php_session_save_path }}"
+        install_php_session_auto_start: "{{ inv_install_php_session_auto_start }}"
+        install_php_session_use_strict_mode: "{{ inv_install_php_session_use_strict_mode }}"
+        install_php_disable_functions: "{{ inv_install_php_disable_functions }}"
+      ansible.builtin.include_role:
+        name: "labocbz.install_php"
