@@ -32,3 +32,13 @@ inv_cert_bundles:
     dest_user: "mysql"
     dest_group: "mysql"
     dest_mode: "0700"
+
+  - name: "my-phpmyadmin-cluster.domain.tld"
+    type: "cert"
+    src: "/tmp/my-phpmyadmin-cluster.domain.tld.zip"
+    dest: "/usr/share/phpmyadmin/ssl"
+    #src_user: "myUser"
+    #src_password: "secretPassword"
+    dest_user: "www-data"
+    dest_group: "www-data"
+    dest_mode: "0700"

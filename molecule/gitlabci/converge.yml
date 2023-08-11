@@ -12,5 +12,14 @@
     - name: "Include labocbz.install_phpmyadmin"
       tags:
         - "labocbz.install_phpmyadmin"
+      vars:
+        install_phpmyadmin_blowfish: "{{ inv_install_phpmyadmin_blowfish }}"
+        install_phpmyadmin_install_dir: "{{ inv_install_phpmyadmin_install_dir }}"
+        install_phpmyadmin_tempdir: "{{ inv_install_phpmyadmin_tempdir }}"
+        install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_ssl_dir }}"
+        install_phpmyadmin_php_version: "{{ inv_install_phpmyadmin_php_version }}"
+        install_phpmyadmin_user: "{{ inv_install_phpmyadmin_user }}"
+        install_phpmyadmin_group: "{{ inv_install_phpmyadmin_group }}"
+        install_phpmyadmin_dbservers: "{{ inv_install_phpmyadmin_dbservers }}"
       ansible.builtin.include_role:
         name: "labocbz.install_phpmyadmin"

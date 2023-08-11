@@ -1,1 +1,24 @@
 ---
+install_phpmyadmin_blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
+install_phpmyadmin_install_dir: "/usr/share/phpmyadmin"
+install_phpmyadmin_tempdir: "/var/lib/phpmyadmin/tmp"
+install_phpmyadmin_ssl_dir: "{{ install_phpmyadmin_install_dir }}/ssl"
+
+install_phpmyadmin_php_version: "8.2"
+
+install_phpmyadmin_user: "www-data"
+install_phpmyadmin_group: "www-data"
+
+install_phpmyadmin_dbservers:
+  - db_host: "molecule-local-instance-1-install-phpmyadmin"
+    db_port: 3306
+    db_user: "root"
+    db_password: "PN$^L8zP*wm@3q"
+    db_remote: false
+    db_ssl: true
+    db_ssl_ca: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
+    db_ssl_client_auth: true
+    db_ssl_client_key: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
+    db_ssl_client_cert: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
+    pma_user: "phpmyadmin"
+    pma_password: "aQ&SR77mp@D&FF"
