@@ -5,8 +5,8 @@
   gather_facts: true
   tasks:
 
-    #- name: "Include cryptographic content var file"
-    #  ansible.builtin.include_vars: "../../tests/certs/main.yml"
+    - name: "Include cryptographic content var file"
+      ansible.builtin.include_vars: "../../tests/certs/main.yml"
 
     - name: "Include labocbz.prepare_host"
       tags:
@@ -28,48 +28,84 @@
       changed_when: output.rc != 0
       ansible.builtin.shell: "echo \"{{ hostvars[host]['ansible_default_ipv4']['address'] }}  {{ host }} # from Molecule\" >> /etc/hosts"
 
-    #- name: "Import cryptographic content if needed (cert)"
-    #  run_once: yes
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined and bundle.type == "cert"
-    #  ansible.builtin.copy:
-    #    src: "../../tests/certs/{{ bundle.name }}.zip"
-    #    dest: "/tmp/{{ bundle.name }}.zip"
-    #    owner: "root"
-    #    group: "root"
-    #    mode: 0700
+    - name: "Import cryptographic content if needed (cert)"
+      run_once: yes
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined and bundle.type == "cert"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}.zip"
+        dest: "/tmp/{{ bundle.name }}.zip"
+        owner: "root"
+        group: "root"
+        mode: 0700
 
-    #- name: "Import cryptographic content if needed (CA)"
-    #  run_once: yes
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined and bundle.type == "CA"
-    #  ansible.builtin.copy:
-    #    src: "../../tests/certs/{{ bundle.name }}"
-    #    dest: "/tmp/{{ bundle.name }}"
-    #    owner: "root"
-    #    group: "root"
-    #    mode: 0700
+    - name: "Import cryptographic content if needed (CA)"
+      run_once: yes
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined and bundle.type == "CA"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}"
+        dest: "/tmp/{{ bundle.name }}"
+        owner: "root"
+        group: "root"
+        mode: 0700
 
-    #- name: "Include labocbz.add_certificates"
-    #  tags:
-    #    - "labocbz.add_certificates"
-    #  loop: "{{ inv_cert_bundles }}"
-    #  loop_control:
-    #    loop_var: bundle
-    #  when: inv_cert_bundles is defined
-    #  vars:
-    #    add_certificates_bundle_name: "{{ bundle.name }}"
-    #    add_certificates_bundle_type: "{{ bundle.type }}"
-    #    add_certificates_bundle_src: "{{ bundle.src }}"
-    #    add_certificates_bundle_dest: "{{ bundle.dest }}"
-    #    #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
-    #    #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
-    #    #add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
-    #    #add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
-    #    #add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
-    #  ansible.builtin.include_role:
-    #    name: "labocbz.add_certificates"
+    - name: "Include labocbz.add_certificates"
+      tags:
+        - "labocbz.add_certificates"
+      loop: "{{ inv_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_cert_bundles is defined
+      vars:
+        add_certificates_bundle_name: "{{ bundle.name }}"
+        add_certificates_bundle_type: "{{ bundle.type }}"
+        add_certificates_bundle_src: "{{ bundle.src }}"
+        add_certificates_bundle_dest: "{{ bundle.dest }}"
+        #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
+        #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
+        #add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
+        #add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
+        #add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
+      ansible.builtin.include_role:
+        name: "labocbz.add_certificates"
+
+    - name: "Include labocbz.install_mariadb"
+      tags:
+        - "labocbz.install_mariadb"
+      vars:
+        install_mariadb_confs_path: "{{ inv_install_mariadb_confs_path }}"
+        install_mariadb_config_path: "{{ inv_install_mariadb_config_path }}"
+        install_mariadb_ssl_path: "{{ inv_install_mariadb_ssl_path }}"
+        install_mariadb_log_path: "{{ inv_install_mariadb_log_path }}"
+        install_mariadb_port: "{{ inv_install_mariadb_port }}"
+        install_mariadb_bind_address: "{{ inv_install_mariadb_bind_address }}"
+        install_mariadb_server_id: "{{ inv_install_mariadb_server_id }}"
+        install_mariadb_max_connections: "{{ inv_install_mariadb_max_connections }}"
+        install_mariadb_innodb_buffer_pool_size: "{{ inv_install_mariadb_innodb_buffer_pool_size }}"
+        install_mariadb_general_log_file: "{{ inv_install_mariadb_general_log_file }}"
+        install_mariadb_general_log: "{{ inv_install_mariadb_general_log }}"
+        install_mariadb_log_error: "{{ inv_install_mariadb_log_error }}"
+        install_mariadb_log_bin: "{{ inv_install_mariadb_log_bin }}"
+        install_mariadb_expire_logs_days: "{{ inv_install_mariadb_expire_logs_days }}"
+        install_mariadb_max_binlog_size: "{{ inv_install_mariadb_max_binlog_size }}"
+        install_mariadb_ssl: "{{ inv_install_mariadb_ssl }}"
+        install_mariadb_ssl_client_auth: "{{ inv_install_mariadb_ssl_client_auth }}"
+        install_mariadb_ssl_ca: "{{ inv_install_mariadb_ssl_ca }}"
+        install_mariadb_ssl_cert: "{{ inv_install_mariadb_ssl_cert }}"
+        install_mariadb_ssl_key: "{{ inv_install_mariadb_ssl_key }}"
+        install_mariadb_charset: "{{ inv_install_mariadb_charset }}"
+        install_mariadb_collation: "{{ inv_install_mariadb_collation }}"
+        install_mariadb_galera_cluster: "{{ inv_install_mariadb_galera_cluster }}"
+        install_mariadb_galera_node_list: "{{ inv_install_mariadb_galera_node_list }}"
+        install_mariadb_galera_clustername: "{{ inv_install_mariadb_galera_clustername }}"
+        install_mariadb_galera_node_name: "{{ inv_install_mariadb_galera_node_name }}"
+        install_mariadb_galera_node_address: "{{ inv_install_mariadb_galera_node_address }}"
+        install_mariadb_galera_cluster_seed_host: "{{ inv_install_mariadb_galera_cluster_seed_host }}"
+        install_mariadb_secure_root_password: "{{ inv_install_mariadb_secure_root_password }}"
+      ansible.builtin.include_role:
+        name: "labocbz.install_mariadb"
