@@ -1,11 +1,11 @@
 ---
-- name: "Install packages"
-  ansible.builtin.package:
-    update_cache: true
-    name:
-      - "php{{ install_phpmyadmin_php_version }}-mbstring"
-      - "php{{ install_phpmyadmin_php_version }}-zip"
-      - "php{{ install_phpmyadmin_php_version }}-gd"
+#- name: "Install packages"
+#  ansible.builtin.package:
+#    update_cache: true
+#    name:
+#      - "php{{ install_phpmyadmin_php_version }}-mbstring"
+#      - "php{{ install_phpmyadmin_php_version }}-zip"
+#      - "php{{ install_phpmyadmin_php_version }}-gd"
 
 - name: "Install PhpMyAdmin"
   block:
@@ -81,16 +81,12 @@
       loop_control:
         loop_var: dbserver
       when: dbserver.db_remote
-      ansible.builtin.shell: "mysql -h {{ dbserver.db_host }} -P {{ dbserver.db_port }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < {{ install_phpmyadmin_install_dir }}/sql/create_tables.sql"
-
-    - name: "Create database, tables, etc. in all db servers, on local server"
-      register: output
-      changed_when: output.rc != 0
-      loop: "{{ install_phpmyadmin_dbservers }}"
-      loop_control:
-        loop_var: dbserver
-      when: not dbserver.db_remote
-      ansible.builtin.shell: "mysql -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < {{ install_phpmyadmin_install_dir }}/sql/create_tables.sql"
+      vars:
+        ssl_option: "{{ '' if not dbserver.db_ssl | default(false) else '--ssl --ssl-ca=' ~ dbserver.db_ssl_ca }}"
+        mtls_options: "{{ '' if not dbserver.db_ssl_client_auth | default(false) else '--ssl-cert=' ~ dbserver.db_ssl_client_cert ~ ' --ssl-key=' ~ dbserver.db_ssl_client_key }}"
+        host_options: "-h {{ dbserver.db_host }} -P {{ dbserver.db_port }}"
+      ansible.builtin.shell: >
+        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < '{{ install_phpmyadmin_install_dir }}/sql/create_tables.sql'
 
     - name: "Create users and grants for PhpMyAdmin, on remote server"
       register: output
@@ -99,13 +95,9 @@
       loop_control:
         loop_var: dbserver
       when: dbserver.db_remote
-      ansible.builtin.command: "mysql -h {{ dbserver.db_host }} -P {{ dbserver.db_port }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute=\"GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';\""
-
-    - name: "Create users and grants for PhpMyAdmin, on local server"
-      register: output
-      changed_when: output.rc != 0
-      loop: "{{ install_phpmyadmin_dbservers }}"
-      loop_control:
-        loop_var: dbserver
-      when: not dbserver.db_remote
-      ansible.builtin.command: "mysql -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute=\"GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';\""
+      vars:
+        ssl_option: "{{ '' if not dbserver.db_ssl | default(false) else '--ssl --ssl-ca=' ~ dbserver.db_ssl_ca }}"
+        mtls_options: "{{ '' if not dbserver.db_ssl_client_auth | default(false) else '--ssl-cert=' ~ dbserver.db_ssl_client_cert ~ ' --ssl-key=' ~ dbserver.db_ssl_client_key }}"
+        host_options: "-h {{ dbserver.db_host }} -P {{ dbserver.db_port }}"
+      ansible.builtin.shell: >
+        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute="GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';"

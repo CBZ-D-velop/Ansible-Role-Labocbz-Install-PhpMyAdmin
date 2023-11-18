@@ -67,8 +67,66 @@
         #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
         #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
         #add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
-        #add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
-        #add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
+        add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
+        add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
+      ansible.builtin.include_role:
+        name: "labocbz.add_certificates"
+
+# if you have any prepararion task
+- name: "Prepare"
+  hosts: "all:&MARIADB"
+  gather_facts: true
+  tasks:
+
+    - name: "Include labocbz.prepare_host"
+      tags:
+        - "labocbz.prepare_host"
+      vars:
+        prepare_host_users: "{{ inv_prepare_host_users }}"
+      ansible.builtin.include_role:
+        name: "labocbz.prepare_host"
+
+    - name: "Import cryptographic content if needed (cert)"
+      loop: "{{ inv_install_mariadb_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_install_mariadb_cert_bundles is defined and bundle.type == "cert"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}.zip"
+        dest: "/tmp/{{ bundle.name }}.zip"
+        owner: "root"
+        group: "root"
+        mode: 0700
+
+    - name: "Import cryptographic content if needed (CA)"
+      loop: "{{ inv_install_mariadb_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_install_mariadb_cert_bundles is defined and bundle.type == "CA"
+      ansible.builtin.copy:
+        src: "../../tests/certs/{{ bundle.name }}"
+        dest: "/tmp/{{ bundle.name }}"
+        owner: "root"
+        group: "root"
+        mode: 0700
+
+    - name: "Include labocbz.add_certificates"
+      tags:
+        - "labocbz.add_certificates"
+      loop: "{{ inv_install_mariadb_cert_bundles }}"
+      loop_control:
+        loop_var: bundle
+      when: inv_install_mariadb_cert_bundles is defined
+      vars:
+        add_certificates_bundle_name: "{{ bundle.name }}"
+        add_certificates_bundle_type: "{{ bundle.type }}"
+        add_certificates_bundle_src: "{{ bundle.src }}"
+        add_certificates_bundle_dest: "{{ bundle.dest }}"
+        #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
+        #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
+        add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
+        add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
+        add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
       ansible.builtin.include_role:
         name: "labocbz.add_certificates"
 

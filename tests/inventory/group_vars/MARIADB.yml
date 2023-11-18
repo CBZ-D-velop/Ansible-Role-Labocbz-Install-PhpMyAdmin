@@ -25,9 +25,9 @@ inv_install_mariadb_max_binlog_size: "100M"
 
 inv_install_mariadb_ssl: true
 inv_install_mariadb_ssl_client_auth: true
-inv_install_mariadb_ssl_ca: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-cluster.domain.tld/ca-chain.pem.crt"
-inv_install_mariadb_ssl_cert: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-cluster.domain.tld/my-mariadb-cluster.domain.tld.pem.crt"
-inv_install_mariadb_ssl_key: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-cluster.domain.tld/my-mariadb-cluster.domain.tld.pem.key"
+inv_install_mariadb_ssl_ca: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-server.domain.tld/ca-chain.pem.crt"
+inv_install_mariadb_ssl_cert: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-server.domain.tld/my-mariadb-server.domain.tld.pem.crt"
+inv_install_mariadb_ssl_key: "{{ inv_install_mariadb_ssl_path }}/my-mariadb-server.domain.tld/my-mariadb-server.domain.tld.pem.key"
 
 inv_install_mariadb_charset: "utf8mb4"
 inv_install_mariadb_collation: "utf8mb4_general_ci"
@@ -41,3 +41,14 @@ inv_install_mariadb_galera_node_list:
 inv_install_mariadb_galera_cluster_seed_host: "molecule-local-instance-1-install-phpmyadmin"
 
 inv_install_mariadb_secure_root_password: "PN$^L8zP*wm@3q"
+
+inv_install_mariadb_cert_bundles:
+  - name: "my-mariadb-server.domain.tld"
+    type: "cert"
+    src: "/tmp/my-mariadb-server.domain.tld.zip"
+    dest: "/etc/mysql/ssl"
+    #src_user: "myUser"
+    #src_password: "secretPassword"
+    dest_user: "mysql"
+    dest_group: "mysql"
+    dest_mode: "0700"
