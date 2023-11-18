@@ -1,11 +1,11 @@
 ---
-#- name: "Install packages"
-#  ansible.builtin.package:
-#    update_cache: true
-#    name:
-#      - "php{{ install_phpmyadmin_php_version }}-mbstring"
-#      - "php{{ install_phpmyadmin_php_version }}-zip"
-#      - "php{{ install_phpmyadmin_php_version }}-gd"
+- name: "Install packages"
+  ansible.builtin.package:
+    update_cache: true
+    name:
+      - "php-mbstring"
+      - "php-zip"
+      - "php-gd"
 
 - name: "Install PhpMyAdmin"
   block:
