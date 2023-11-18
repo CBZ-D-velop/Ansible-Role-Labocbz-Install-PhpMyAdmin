@@ -11,15 +11,15 @@ inv_install_phpmyadmin_user: "www-data"
 inv_install_phpmyadmin_group: "www-data"
 
 inv_install_phpmyadmin_dbservers:
-  - db_host: "molecule-local-instance-1-install-phpmyadmin"
+  - db_host: "localhost"
     db_port: 3306
     db_user: "root"
     db_password: "PN$^L8zP*wm@3q"
-    db_remote: false
+    db_remote: true
     db_ssl: true
-    db_ssl_ca: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
+    db_ssl_ca: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-server.domain.tld/ca-chain.pem.crt"
     db_ssl_client_auth: true
-    db_ssl_client_key: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
-    db_ssl_client_cert: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
+    db_ssl_client_key: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-server.domain.tld/my-phpmyadmin-server.domain.tld.pem.key"
+    db_ssl_client_cert: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-server.domain.tld/my-phpmyadmin-server.domain.tld.pem.crt"
     pma_user: "phpmyadmin"
     pma_password: "aQ&SR77mp@D&FF"

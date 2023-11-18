@@ -180,14 +180,14 @@ To run this role, you can copy the molecule/default/converge.yml playbook and ad
     tags:
     - "labocbz.install_phpmyadmin"
     vars:
-    install_phpmyadmin_blowfish: "{{ inv_install_phpmyadmin_blowfish }}"
-    install_phpmyadmin_install_dir: "{{ inv_install_phpmyadmin_install_dir }}"
-    install_phpmyadmin_tempdir: "{{ inv_install_phpmyadmin_tempdir }}"
-    install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_ssl_dir }}"
-    install_phpmyadmin_php_version: "{{ inv_install_phpmyadmin_php_version }}"
-    install_phpmyadmin_user: "{{ inv_install_phpmyadmin_user }}"
-    install_phpmyadmin_group: "{{ inv_install_phpmyadmin_group }}"
-    install_phpmyadmin_dbservers: "{{ inv_install_phpmyadmin_dbservers }}"
+      install_phpmyadmin_blowfish: "{{ inv_install_phpmyadmin_blowfish }}"
+      install_phpmyadmin_install_dir: "{{ inv_install_phpmyadmin_install_dir }}"
+      install_phpmyadmin_tempdir: "{{ inv_install_phpmyadmin_tempdir }}"
+      install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_ssl_dir }}"
+      install_phpmyadmin_php_version: "{{ inv_install_phpmyadmin_php_version }}"
+      install_phpmyadmin_user: "{{ inv_install_phpmyadmin_user }}"
+      install_phpmyadmin_group: "{{ inv_install_phpmyadmin_group }}"
+      install_phpmyadmin_dbservers: "{{ inv_install_phpmyadmin_dbservers }}"
     ansible.builtin.include_role:
     name: "labocbz.install_phpmyadmin"
 ```
@@ -213,6 +213,10 @@ Here you can put your change to keep a trace of your work and decisions.
 * Molecule now use remote Docker image by Lord Robin Crombez
 * Molecule now use custom Docker image in CI/CD by env vars
 * New CICD with needs and optimization
+
+### 2023-11-18: mTLS
+
+* Role REALLY handle mTLS auth
 
 ## Authors
 
