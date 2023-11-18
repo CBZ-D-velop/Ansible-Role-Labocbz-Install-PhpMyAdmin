@@ -49,6 +49,6 @@ inv_install_mariadb_cert_bundles:
     dest: "/etc/mysql/ssl"
     #src_user: "myUser"
     #src_password: "secretPassword"
-    dest_user: "mysql"
+    dest_user: "root"
     dest_group: "mysql"
     dest_mode: "0700"
