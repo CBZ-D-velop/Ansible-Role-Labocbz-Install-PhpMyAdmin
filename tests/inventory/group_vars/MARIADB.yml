@@ -50,5 +50,5 @@ inv_install_mariadb_cert_bundles:
     #src_user: "myUser"
     #src_password: "secretPassword"
     dest_user: "root"
-    dest_group: "mysql"
+    dest_group: "root"
     dest_mode: "0700"
