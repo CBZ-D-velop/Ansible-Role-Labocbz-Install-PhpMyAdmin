@@ -1,7 +1,7 @@
 ---
 inv_prepare_host_users:
   - login: "root"
-    group: "mysql"
+    group: "root"
 
 inv_install_mariadb_confs_path: "/etc/mysql"
 inv_install_mariadb_config_path: "{{ inv_install_mariadb_confs_path }}/mariadb.conf.d"
@@ -49,6 +49,6 @@ inv_install_mariadb_cert_bundles:
     dest: "/etc/mysql/ssl"
     #src_user: "myUser"
     #src_password: "secretPassword"
-    dest_user: "mysql"
-    dest_group: "mysql"
+    dest_user: "root"
+    dest_group: "root"
     dest_mode: "0700"
