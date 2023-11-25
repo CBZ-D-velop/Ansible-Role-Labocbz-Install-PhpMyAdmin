@@ -101,3 +101,14 @@
         host_options: "-h {{ dbserver.db_host }} -P {{ dbserver.db_port }}"
       ansible.builtin.shell: >
         mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute="GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';"
+
+- name: "Apply permissions on PhpMyAdmin"
+  register: output
+  changed_when: output.size <= 0
+  ansible.builtin.file:
+    state: directory
+    recurse: yes
+    path: "{{ install_phpmyadmin_install_dir }}"
+    mode: "0700"
+    group: "{{ install_phpmyadmin_group }}"
+    owner: "{{ install_phpmyadmin_user }}"
