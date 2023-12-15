@@ -1,4 +1,10 @@
 ---
+inv_prepare_host_system_users:
+  - login: "phpmyadmin"
+    group: "phpmyadmin"
+
+  - login: "mysql"
+    group: "mysql"
 
 inv_install_phpmyadmin_blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
 inv_install_phpmyadmin_install_dir: "/usr/share/phpmyadmin"
@@ -7,8 +13,8 @@ inv_install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_install_dir }}/ssl"
 
 inv_install_phpmyadmin_php_version: "8.2"
 
-inv_install_phpmyadmin_user: "www-data"
-inv_install_phpmyadmin_group: "www-data"
+inv_install_phpmyadmin_user: "phpmyadmin"
+inv_install_phpmyadmin_group: "phpmyadmin"
 
 inv_install_phpmyadmin_dbservers:
   - db_host: "localhost"

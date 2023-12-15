@@ -19,6 +19,6 @@ inv_cert_bundles:
     dest: "/usr/share/phpmyadmin/ssl"
     #src_user: "myUser"
     #src_password: "secretPassword"
-    dest_user: "{{ inv_install_phpmyadmin_user }}"
-    dest_group: "{{ inv_install_phpmyadmin_group }}"
+    dest_user: "phpmyadmin"
+    dest_group: "phpmyadmin"
     dest_mode: "0700"

@@ -6,8 +6,8 @@ install_phpmyadmin_ssl_dir: "{{ install_phpmyadmin_install_dir }}/ssl"
 
 install_phpmyadmin_php_version: "8.2"
 
-install_phpmyadmin_user: "www-data"
-install_phpmyadmin_group: "www-data"
+install_phpmyadmin_user: "phpmyadmin"
+install_phpmyadmin_group: "phpmyadmin"
 
 install_phpmyadmin_dbservers:
   - db_host: "molecule-local-instance-1-install-phpmyadmin"
