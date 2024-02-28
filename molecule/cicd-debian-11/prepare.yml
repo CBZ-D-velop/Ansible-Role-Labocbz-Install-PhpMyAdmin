@@ -1,7 +1,7 @@
 ---
 # if you have any prepararion task
 - name: "Prepare"
-  hosts: "all"
+  hosts: "cicd-debian-11"
   gather_facts: true
   tasks:
 
@@ -12,18 +12,18 @@
       tags:
         - "labocbz.prepare_host"
       vars:
-        prepare_host_system_users: "{{ inv_prepare_host_system_users }}"
+        prepare_host__system_users: "{{ inv_prepare_host__system_users }}"
       ansible.builtin.include_role:
         name: "labocbz.prepare_host"
 
     - name: "Gather facts from all hosts"
       delegate_to: "{{ item }}"
       delegate_facts: true
-      loop: "{{ groups['all'] }}"
+      loop: "{{ groups['cicd-debian-11'] }}"
       ansible.builtin.setup:
 
     - name: "Edit /etc/hosts file to add all hosts"
-      loop: "{{ groups['all'] }}"
+      loop: "{{ groups['cicd-debian-11'] }}"
       loop_control:
         loop_var: host
       register: output
@@ -62,73 +62,15 @@
         loop_var: bundle
       when: inv_cert_bundles is defined
       vars:
-        add_certificates_bundle_name: "{{ bundle.name }}"
-        add_certificates_bundle_type: "{{ bundle.type }}"
-        add_certificates_bundle_src: "{{ bundle.src }}"
-        add_certificates_bundle_dest: "{{ bundle.dest }}"
-        #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
-        #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
-        add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
-        add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
-        add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
-      ansible.builtin.include_role:
-        name: "labocbz.add_certificates"
-
-# if you have any prepararion task
-- name: "Prepare"
-  hosts: "all:&MARIADB"
-  gather_facts: true
-  tasks:
-
-    - name: "Include labocbz.prepare_host"
-      tags:
-        - "labocbz.prepare_host"
-      vars:
-        prepare_host_system_users: "{{ inv_prepare_host_system_users }}"
-      ansible.builtin.include_role:
-        name: "labocbz.prepare_host"
-
-    - name: "Import cryptographic content if needed (cert)"
-      loop: "{{ inv_install_mariadb_cert_bundles }}"
-      loop_control:
-        loop_var: bundle
-      when: inv_install_mariadb_cert_bundles is defined and bundle.type == "cert"
-      ansible.builtin.copy:
-        src: "../../tests/certs/{{ bundle.name }}.zip"
-        dest: "/tmp/{{ bundle.name }}.zip"
-        owner: "root"
-        group: "root"
-        mode: 0700
-
-    - name: "Import cryptographic content if needed (CA)"
-      loop: "{{ inv_install_mariadb_cert_bundles }}"
-      loop_control:
-        loop_var: bundle
-      when: inv_install_mariadb_cert_bundles is defined and bundle.type == "CA"
-      ansible.builtin.copy:
-        src: "../../tests/certs/{{ bundle.name }}"
-        dest: "/tmp/{{ bundle.name }}"
-        owner: "root"
-        group: "root"
-        mode: 0700
-
-    - name: "Include labocbz.add_certificates"
-      tags:
-        - "labocbz.add_certificates"
-      loop: "{{ inv_install_mariadb_cert_bundles }}"
-      loop_control:
-        loop_var: bundle
-      when: inv_install_mariadb_cert_bundles is defined
-      vars:
-        add_certificates_bundle_name: "{{ bundle.name }}"
-        add_certificates_bundle_type: "{{ bundle.type }}"
-        add_certificates_bundle_src: "{{ bundle.src }}"
-        add_certificates_bundle_dest: "{{ bundle.dest }}"
-        #add_certificates_bundle_src_user: "{{ bundle.src_user }}"
-        #add_certificates_bundle_src_password: "{{ bundle.src_password }}"
-        add_certificates_bundle_dest_user: "{{ bundle.dest_user }}"
-        add_certificates_bundle_dest_group: "{{ bundle.dest_group }}"
-        add_certificates_bundle_dest_mode: "{{ bundle.dest_mode }}"
+        add_certificates__bundle_name: "{{ bundle.name }}"
+        add_certificates__bundle_type: "{{ bundle.type }}"
+        add_certificates__bundle_src: "{{ bundle.src }}"
+        add_certificates__bundle_dest: "{{ bundle.dest }}"
+        #add_certificates__bundle_src_user: "{{ bundle.src_user }}"
+        #add_certificates__bundle_src_password: "{{ bundle.src_password }}"
+        add_certificates__bundle_dest_user: "{{ bundle.dest_user }}"
+        add_certificates__bundle_dest_group: "{{ bundle.dest_group }}"
+        add_certificates__bundle_dest_mode: "{{ bundle.dest_mode }}"
       ansible.builtin.include_role:
         name: "labocbz.add_certificates"
 
@@ -136,34 +78,34 @@
       tags:
         - "labocbz.install_mariadb"
       vars:
-        install_mariadb_confs_path: "{{ inv_install_mariadb_confs_path }}"
-        install_mariadb_config_path: "{{ inv_install_mariadb_config_path }}"
-        install_mariadb_ssl_path: "{{ inv_install_mariadb_ssl_path }}"
-        install_mariadb_log_path: "{{ inv_install_mariadb_log_path }}"
-        install_mariadb_port: "{{ inv_install_mariadb_port }}"
-        install_mariadb_bind_address: "{{ inv_install_mariadb_bind_address }}"
-        install_mariadb_server_id: "{{ inv_install_mariadb_server_id }}"
-        install_mariadb_max_connections: "{{ inv_install_mariadb_max_connections }}"
-        install_mariadb_innodb_buffer_pool_size: "{{ inv_install_mariadb_innodb_buffer_pool_size }}"
-        install_mariadb_general_log_file: "{{ inv_install_mariadb_general_log_file }}"
-        install_mariadb_general_log: "{{ inv_install_mariadb_general_log }}"
-        install_mariadb_log_error: "{{ inv_install_mariadb_log_error }}"
-        install_mariadb_log_bin: "{{ inv_install_mariadb_log_bin }}"
-        install_mariadb_expire_logs_days: "{{ inv_install_mariadb_expire_logs_days }}"
-        install_mariadb_max_binlog_size: "{{ inv_install_mariadb_max_binlog_size }}"
-        install_mariadb_ssl: "{{ inv_install_mariadb_ssl }}"
-        install_mariadb_ssl_client_auth: "{{ inv_install_mariadb_ssl_client_auth }}"
-        install_mariadb_ssl_ca: "{{ inv_install_mariadb_ssl_ca }}"
-        install_mariadb_ssl_cert: "{{ inv_install_mariadb_ssl_cert }}"
-        install_mariadb_ssl_key: "{{ inv_install_mariadb_ssl_key }}"
-        install_mariadb_charset: "{{ inv_install_mariadb_charset }}"
-        install_mariadb_collation: "{{ inv_install_mariadb_collation }}"
-        install_mariadb_galera_cluster: "{{ inv_install_mariadb_galera_cluster }}"
-        install_mariadb_galera_node_list: "{{ inv_install_mariadb_galera_node_list }}"
-        install_mariadb_galera_clustername: "{{ inv_install_mariadb_galera_clustername }}"
-        install_mariadb_galera_node_name: "{{ inv_install_mariadb_galera_node_name }}"
-        install_mariadb_galera_node_address: "{{ inv_install_mariadb_galera_node_address }}"
-        install_mariadb_galera_cluster_seed_host: "{{ inv_install_mariadb_galera_cluster_seed_host }}"
-        install_mariadb_secure_root_password: "{{ inv_install_mariadb_secure_root_password }}"
+        install_mariadb__confs_path: "{{ inv_install_mariadb__confs_path }}"
+        install_mariadb__config_path: "{{ inv_install_mariadb__config_path }}"
+        install_mariadb__ssl_path: "{{ inv_install_mariadb__ssl_path }}"
+        install_mariadb__log_path: "{{ inv_install_mariadb__log_path }}"
+        install_mariadb__port: "{{ inv_install_mariadb__port }}"
+        install_mariadb__bind_address: "{{ inv_install_mariadb__bind_address }}"
+        install_mariadb__server_id: "{{ inv_install_mariadb__server_id }}"
+        install_mariadb__max_connections: "{{ inv_install_mariadb__max_connections }}"
+        install_mariadb__innodb_buffer_pool_size: "{{ inv_install_mariadb__innodb_buffer_pool_size }}"
+        install_mariadb__general_log_file: "{{ inv_install_mariadb__general_log_file }}"
+        install_mariadb__general_log: "{{ inv_install_mariadb__general_log }}"
+        install_mariadb__log_error: "{{ inv_install_mariadb__log_error }}"
+        install_mariadb__log_bin: "{{ inv_install_mariadb__log_bin }}"
+        install_mariadb__expire_logs_days: "{{ inv_install_mariadb__expire_logs_days }}"
+        install_mariadb__max_binlog_size: "{{ inv_install_mariadb__max_binlog_size }}"
+        install_mariadb__ssl: "{{ inv_install_mariadb__ssl }}"
+        install_mariadb__ssl_client_auth: "{{ inv_install_mariadb__ssl_client_auth }}"
+        install_mariadb__ssl_ca: "{{ inv_install_mariadb__ssl_ca }}"
+        install_mariadb__ssl_cert: "{{ inv_install_mariadb__ssl_cert }}"
+        install_mariadb__ssl_key: "{{ inv_install_mariadb__ssl_key }}"
+        install_mariadb__charset: "{{ inv_install_mariadb__charset }}"
+        install_mariadb__collation: "{{ inv_install_mariadb__collation }}"
+        install_mariadb__galera_cluster: "{{ inv_install_mariadb__galera_cluster }}"
+        install_mariadb__galera_node_list: "{{ inv_install_mariadb__galera_node_list }}"
+        install_mariadb__galera_clustername: "{{ inv_install_mariadb__galera_clustername }}"
+        install_mariadb__galera_node_name: "{{ inv_install_mariadb__galera_node_name }}"
+        install_mariadb__galera_node_address: "{{ inv_install_mariadb__galera_node_address }}"
+        install_mariadb__galera_cluster_seed_host: "{{ inv_install_mariadb__galera_cluster_seed_host }}"
+        install_mariadb__secure_root_password: "{{ inv_install_mariadb__secure_root_password }}"
       ansible.builtin.include_role:
         name: "labocbz.install_mariadb"

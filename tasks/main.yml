@@ -12,26 +12,26 @@
     - name: "Check if install dir exist"
       register: file_check
       ansible.builtin.stat:
-        path: "{{ install_phpmyadmin_install_dir }}"
+        path: "{{ install_phpmyadmin__install_dir }}"
 
     - name: "Create install dir"
       when: not file_check.stat.exists
       ansible.builtin.file:
-        path: "{{ install_phpmyadmin_install_dir }}"
+        path: "{{ install_phpmyadmin__install_dir }}"
         state: directory
         recurse: yes
         mode: "0700"
-        group: "{{ install_phpmyadmin_group }}"
-        owner: "{{ install_phpmyadmin_user }}"
+        group: "{{ install_phpmyadmin__group }}"
+        owner: "{{ install_phpmyadmin__user }}"
 
     - name: "Download latest version and install PhpMyAdmin"
       ansible.builtin.unarchive:
         src: "https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz"
-        dest: "{{ install_phpmyadmin_install_dir }}"
+        dest: "{{ install_phpmyadmin__install_dir }}"
         remote_src: yes
         mode: "0700"
-        group: "{{ install_phpmyadmin_group }}"
-        owner: "{{ install_phpmyadmin_user }}"
+        group: "{{ install_phpmyadmin__group }}"
+        owner: "{{ install_phpmyadmin__user }}"
         extra_opts: [--strip-components=1]
         exclude: 
           - "*config.sample.inc.php"
@@ -39,36 +39,36 @@
     - name: "Check if tempDir exist"
       register: file_check
       ansible.builtin.stat:
-        path: "{{ install_phpmyadmin_tempdir }}"
+        path: "{{ install_phpmyadmin__tempdir }}"
 
     - name: "Create tempDir"
       when: not file_check.stat.exists
       ansible.builtin.file:
-        path: "{{ install_phpmyadmin_tempdir }}"
+        path: "{{ install_phpmyadmin__tempdir }}"
         state: directory
         recurse: yes
         mode: "0700"
-        group: "{{ install_phpmyadmin_group }}"
-        owner: "{{ install_phpmyadmin_user }}"
+        group: "{{ install_phpmyadmin__group }}"
+        owner: "{{ install_phpmyadmin__user }}"
 
     - name: "Check if config.sample.inc.php exist"
       register: file_check
       ansible.builtin.stat:
-        path: "{{ install_phpmyadmin_install_dir }}/config.sample.inc.php"
+        path: "{{ install_phpmyadmin__install_dir }}/config.sample.inc.php"
 
     - name: "Remove config.sample.inc.php"
       when: file_check.stat.exists
       ansible.builtin.file:
-        path: "{{ install_phpmyadmin_install_dir }}/config.sample.inc.php"
+        path: "{{ install_phpmyadmin__install_dir }}/config.sample.inc.php"
         state: absent
 
     - name: "Import config.inc.php"
       ansible.builtin.template:
         src: "templates/config.inc.php.j2"
-        dest: "{{ install_phpmyadmin_install_dir }}/config.inc.php"
+        dest: "{{ install_phpmyadmin__install_dir }}/config.inc.php"
         mode: "0700"
-        group: "{{ install_phpmyadmin_group }}"
-        owner: "{{ install_phpmyadmin_user }}"
+        group: "{{ install_phpmyadmin__group }}"
+        owner: "{{ install_phpmyadmin__user }}"
         lstrip_blocks: yes
 
 - name: "Import and create database content"
@@ -77,29 +77,30 @@
     - name: "Create database, tables, etc. in all db servers, on remote server"
       register: output
       changed_when: output.rc != 0
-      loop: "{{ install_phpmyadmin_dbservers }}"
+      loop: "{{ install_phpmyadmin__dbservers }}"
       loop_control:
         loop_var: dbserver
-      when: dbserver.db_remote
+      when: dbserver.db_remote | default(false)
       vars:
         ssl_option: "{{ '' if not dbserver.db_ssl | default(false) else '--ssl --ssl-ca=' ~ dbserver.db_ssl_ca }}"
         mtls_options: "{{ '' if not dbserver.db_ssl_client_auth | default(false) else '--ssl-cert=' ~ dbserver.db_ssl_client_cert ~ ' --ssl-key=' ~ dbserver.db_ssl_client_key }}"
         host_options: "-h {{ dbserver.db_host }} -P {{ dbserver.db_port }}"
-      ansible.builtin.shell: >
-        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < '{{ install_phpmyadmin_install_dir }}/sql/create_tables.sql'
+      ansible.builtin.shell: |
+        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < '{{ install_phpmyadmin__install_dir }}/sql/create_tables.sql'
+        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute="GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';"
 
-    - name: "Create users and grants for PhpMyAdmin, on remote server"
+    - name: "Create users and grants for PhpMyAdmin, on local server"
       register: output
       changed_when: output.rc != 0
-      loop: "{{ install_phpmyadmin_dbservers }}"
+      loop: "{{ install_phpmyadmin__dbservers }}"
       loop_control:
         loop_var: dbserver
-      when: dbserver.db_remote
+      when: not (dbserver.db_remote | default(false))
       vars:
         ssl_option: "{{ '' if not dbserver.db_ssl | default(false) else '--ssl --ssl-ca=' ~ dbserver.db_ssl_ca }}"
         mtls_options: "{{ '' if not dbserver.db_ssl_client_auth | default(false) else '--ssl-cert=' ~ dbserver.db_ssl_client_cert ~ ' --ssl-key=' ~ dbserver.db_ssl_client_key }}"
-        host_options: "-h {{ dbserver.db_host }} -P {{ dbserver.db_port }}"
-      ansible.builtin.shell: >
+      ansible.builtin.shell: |
+        mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' < '{{ install_phpmyadmin__install_dir }}/sql/create_tables.sql'
         mysql {{ host_options | default('') }} {{ ssl_option | default('') }} {{ mtls_options | default('') }} -u {{ dbserver.db_user }} --password='{{ dbserver.db_password }}' --execute="GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO '{{ dbserver.pma_user }}'@'%' IDENTIFIED BY '{{ dbserver.pma_password }}';"
 
 - name: "Apply permissions on PhpMyAdmin"
@@ -108,7 +109,7 @@
   ansible.builtin.file:
     state: directory
     recurse: yes
-    path: "{{ install_phpmyadmin_install_dir }}"
+    path: "{{ install_phpmyadmin__install_dir }}"
     mode: "0700"
-    group: "{{ install_phpmyadmin_group }}"
-    owner: "{{ install_phpmyadmin_user }}"
+    group: "{{ install_phpmyadmin__group }}"
+    owner: "{{ install_phpmyadmin__user }}"

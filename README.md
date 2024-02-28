@@ -102,27 +102,27 @@ Some vars a required to run this role:
 
 ```YAML
 ---
-install_phpmyadmin_blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
-install_phpmyadmin_install_dir: "/usr/share/phpmyadmin"
-install_phpmyadmin_tempdir: "/var/lib/phpmyadmin/tmp"
-install_phpmyadmin_ssl_dir: "{{ install_phpmyadmin_install_dir }}/ssl"
+install_phpmyadmin__blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
+install_phpmyadmin__install_dir: "/usr/share/phpmyadmin"
+install_phpmyadmin__tempdir: "/var/lib/phpmyadmin/tmp"
+install_phpmyadmin__ssl_dir: "{{ install_phpmyadmin__install_dir }}/ssl"
 
-install_phpmyadmin_php_version: "8.2"
+install_phpmyadmin__php_version: "8.2"
 
-install_phpmyadmin_user: "www-data"
-install_phpmyadmin_group: "www-data"
+install_phpmyadmin__user: "www-data"
+install_phpmyadmin__group: "www-data"
 
-install_phpmyadmin_dbservers:
+install_phpmyadmin__dbservers:
   - db_host: "molecule-local-instance-1-install-phpmyadmin"
     db_port: 3306
     db_user: "root"
     db_password: "PN$^L8zP*wm@3q"
     db_remote: false
     db_ssl: true
-    db_ssl_ca: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
+    db_ssl_ca: "{{ install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
     db_ssl_client_auth: true
-    db_ssl_client_key: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
-    db_ssl_client_cert: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
+    db_ssl_client_key: "{{ install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
+    db_ssl_client_cert: "{{ install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
     pma_user: "phpmyadmin"
     pma_password: "aQ&SR77mp@D&FF"
 
@@ -138,27 +138,27 @@ In order to surchage vars, you have multiples possibilities but for mains cases 
 # From inventory
 ---
 
-inv_install_phpmyadmin_blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
-inv_install_phpmyadmin_install_dir: "/usr/share/phpmyadmin"
-inv_install_phpmyadmin_tempdir: "/var/lib/phpmyadmin/tmp"
-inv_install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_install_dir }}/ssl"
+inv_install_phpmyadmin__blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
+inv_install_phpmyadmin__install_dir: "/usr/share/phpmyadmin"
+inv_install_phpmyadmin__tempdir: "/var/lib/phpmyadmin/tmp"
+inv_install_phpmyadmin__ssl_dir: "{{ inv_install_phpmyadmin__install_dir }}/ssl"
 
-inv_install_phpmyadmin_php_version: "8.2"
+inv_install_phpmyadmin__php_version: "8.2"
 
-inv_install_phpmyadmin_user: "www-data"
-inv_install_phpmyadmin_group: "www-data"
+inv_install_phpmyadmin__user: "www-data"
+inv_install_phpmyadmin__group: "www-data"
 
-inv_install_phpmyadmin_dbservers:
+inv_install_phpmyadmin__dbservers:
   - db_host: "molecule-local-instance-1-install-phpmyadmin"
     db_port: 3306
     db_user: "root"
     db_password: "PN$^L8zP*wm@3q"
     db_remote: false
     db_ssl: true
-    db_ssl_ca: "{{ install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
+    db_ssl_ca: "{{ install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/ca-chain.pem.crt"
     db_ssl_client_auth: true
-    db_ssl_client_key: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
-    db_ssl_client_cert: "{{ inv_install_phpmyadmin_ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
+    db_ssl_client_key: "{{ inv_install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.key"
+    db_ssl_client_cert: "{{ inv_install_phpmyadmin__ssl_dir }}/my-phpmyadmin-cluster.domain.tld/my-phpmyadmin-cluster.domain.tld.pem.crt"
     pma_user: "phpmyadmin"
     pma_password: "aQ&SR77mp@D&FF"
 
@@ -180,14 +180,14 @@ To run this role, you can copy the molecule/default/converge.yml playbook and ad
     tags:
     - "labocbz.install_phpmyadmin"
     vars:
-      install_phpmyadmin_blowfish: "{{ inv_install_phpmyadmin_blowfish }}"
-      install_phpmyadmin_install_dir: "{{ inv_install_phpmyadmin_install_dir }}"
-      install_phpmyadmin_tempdir: "{{ inv_install_phpmyadmin_tempdir }}"
-      install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_ssl_dir }}"
-      install_phpmyadmin_php_version: "{{ inv_install_phpmyadmin_php_version }}"
-      install_phpmyadmin_user: "{{ inv_install_phpmyadmin_user }}"
-      install_phpmyadmin_group: "{{ inv_install_phpmyadmin_group }}"
-      install_phpmyadmin_dbservers: "{{ inv_install_phpmyadmin_dbservers }}"
+      install_phpmyadmin__blowfish: "{{ inv_install_phpmyadmin__blowfish }}"
+      install_phpmyadmin__install_dir: "{{ inv_install_phpmyadmin__install_dir }}"
+      install_phpmyadmin__tempdir: "{{ inv_install_phpmyadmin__tempdir }}"
+      install_phpmyadmin__ssl_dir: "{{ inv_install_phpmyadmin__ssl_dir }}"
+      install_phpmyadmin__php_version: "{{ inv_install_phpmyadmin__php_version }}"
+      install_phpmyadmin__user: "{{ inv_install_phpmyadmin__user }}"
+      install_phpmyadmin__group: "{{ inv_install_phpmyadmin__group }}"
+      install_phpmyadmin__dbservers: "{{ inv_install_phpmyadmin__dbservers }}"
     ansible.builtin.include_role:
     name: "labocbz.install_phpmyadmin"
 ```

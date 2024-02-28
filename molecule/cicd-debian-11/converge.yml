@@ -1,25 +1,19 @@
 ---
 - name: "Converge"
-  hosts: "all"
+  hosts: "cicd-debian-11"
   tasks:
-    # replace these tasks with whatever you find suitable to test
-    - name: "Copy something to test use of synchronize module"
-      ansible.builtin.copy:
-        src: "/etc/hosts"
-        dest: "/tmp/hosts-from-controller"
-        mode: 0700
 
     - name: "Include labocbz.install_phpmyadmin"
       tags:
         - "labocbz.install_phpmyadmin"
       vars:
-        install_phpmyadmin_blowfish: "{{ inv_install_phpmyadmin_blowfish }}"
-        install_phpmyadmin_install_dir: "{{ inv_install_phpmyadmin_install_dir }}"
-        install_phpmyadmin_tempdir: "{{ inv_install_phpmyadmin_tempdir }}"
-        install_phpmyadmin_ssl_dir: "{{ inv_install_phpmyadmin_ssl_dir }}"
-        install_phpmyadmin_php_version: "{{ inv_install_phpmyadmin_php_version }}"
-        install_phpmyadmin_user: "{{ inv_install_phpmyadmin_user }}"
-        install_phpmyadmin_group: "{{ inv_install_phpmyadmin_group }}"
-        install_phpmyadmin_dbservers: "{{ inv_install_phpmyadmin_dbservers }}"
+        install_phpmyadmin__blowfish: "{{ inv_install_phpmyadmin__blowfish }}"
+        install_phpmyadmin__install_dir: "{{ inv_install_phpmyadmin__install_dir }}"
+        install_phpmyadmin__tempdir: "{{ inv_install_phpmyadmin__tempdir }}"
+        install_phpmyadmin__ssl_dir: "{{ inv_install_phpmyadmin__ssl_dir }}"
+        install_phpmyadmin__php_version: "{{ inv_install_phpmyadmin__php_version }}"
+        install_phpmyadmin__user: "{{ inv_install_phpmyadmin__user }}"
+        install_phpmyadmin__group: "{{ inv_install_phpmyadmin__group }}"
+        install_phpmyadmin__dbservers: "{{ inv_install_phpmyadmin__dbservers }}"
       ansible.builtin.include_role:
         name: "labocbz.install_phpmyadmin"

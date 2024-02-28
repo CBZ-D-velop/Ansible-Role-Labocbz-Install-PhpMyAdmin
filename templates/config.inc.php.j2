@@ -23,7 +23,7 @@
  * This is needed for cookie based authentication to encrypt password in
  * cookie. Needs to be 32 chars long.
  */
-$cfg['blowfish_secret'] = '{{ install_phpmyadmin_blowfish }}'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
+$cfg['blowfish_secret'] = '{{ install_phpmyadmin__blowfish }}'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
 
 /**
  * Servers configuration
@@ -33,7 +33,7 @@ $i = 0;
 /**
  * First server
  */
-{% for dbserver in install_phpmyadmin_dbservers %}
+{% for dbserver in install_phpmyadmin__dbservers %}
 $i++;
 /* Authentication type */
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
@@ -174,7 +174,7 @@ $cfg['SaveDir'] = '';
 //$cfg['SendErrorReports'] = 'always';
 
 
-$cfg['TempDir'] = '{{ install_phpmyadmin_tempdir }}';
+$cfg['TempDir'] = '{{ install_phpmyadmin__tempdir }}';
 
 /**
  * You can find more configuration options in the documentation

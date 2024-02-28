@@ -1,0 +1,31 @@
+---
+inv_prepare_host__system_users:
+  - login: "phpmyadmin"
+    group: "phpmyadmin"
+
+  - login: "mysql"
+    group: "mysql"
+
+inv_install_phpmyadmin__blowfish: "T_HFR8yM8NzybY5nkRNkmVYhktYsw7vB"
+inv_install_phpmyadmin__install_dir: "/usr/share/phpmyadmin"
+inv_install_phpmyadmin__tempdir: "/var/lib/phpmyadmin/tmp"
+inv_install_phpmyadmin__ssl_dir: "{{ inv_install_phpmyadmin__install_dir }}/ssl"
+
+inv_install_phpmyadmin__php_version: "8.2"
+
+inv_install_phpmyadmin__user: "phpmyadmin"
+inv_install_phpmyadmin__group: "phpmyadmin"
+
+inv_install_phpmyadmin__dbservers:
+  - db_host: "localhost"
+    db_port: 3306
+    db_user: "root"
+    db_password: "PN$^L8zP*wm@3q"
+    db_remote: false
+    db_ssl: true
+    db_ssl_ca: "{{ install_phpmyadmin__ssl_dir }}/my-phpmyadmin-server.domain.tld/ca-chain.pem.crt"
+    db_ssl_client_auth: true
+    db_ssl_client_key: "{{ inv_install_phpmyadmin__ssl_dir }}/my-phpmyadmin-server.domain.tld/my-phpmyadmin-server.domain.tld.pem.key"
+    db_ssl_client_cert: "{{ inv_install_phpmyadmin__ssl_dir }}/my-phpmyadmin-server.domain.tld/my-phpmyadmin-server.domain.tld.pem.crt"
+    pma_user: "phpmyadmin"
+    pma_password: "aQ&SR77mp@D&FF"
